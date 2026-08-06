@@ -9,7 +9,6 @@ export default function WordleBuilder() {
     const phonemes = selectedWord.phonemes.join('');
     const english = selectedWord.english;
     
-    // This string is the standalone game.
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -55,7 +54,6 @@ export default function WordleBuilder() {
       kbDiv.appendChild(btn);
     });
 
-    // Add Enter button
     let enterBtn = document.createElement('button');
     enterBtn.innerText = 'Enter';
     enterBtn.style.backgroundColor = '#6aaa64';
@@ -106,7 +104,6 @@ export default function WordleBuilder() {
         document.getElementById('feedback').innerHTML = '<span style="color: green;">Correct! English word: ' + englishWord + '</span>';
       } else {
         document.getElementById('feedback').innerHTML = '<span style="color: red;">Try again!</span>';
-        // Reset guess after a short delay
         setTimeout(() => {
           currentGuess = [];
           renderGrid();
