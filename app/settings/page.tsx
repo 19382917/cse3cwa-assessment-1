@@ -6,8 +6,12 @@ export default function Settings() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
+    const darkMode = savedTheme === 'dark';
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(savedTheme);
-    if (savedTheme === 'dark') {
+    
+    if (darkMode) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
@@ -19,6 +23,7 @@ export default function Settings() {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme); 
     document.cookie = `theme=${newTheme}; path=/`; // Store in cookie
+    
     if (newTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -28,9 +33,9 @@ export default function Settings() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Settings</h2>
       <div className="flex items-center justify-between mb-4">
-        <span>Dark Mode</span>
+        <span className="text-gray-900 dark:text-white">Dark Mode</span>
         <button 
           onClick={toggleTheme}
           className={`w-12 h-6 rounded-full transition-colors ${theme === 'dark' ? 'bg-blue-600' : 'bg-gray-400'}`}
