@@ -22,4 +22,14 @@ export default function About() {
       </div>
     </div>
   );
-}
+  
+}<div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+        <h2 className="text-xl font-bold mb-2">References</h2>
+        <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300">
+          <li>Meta Platforms. (2023). <em>React Documentation</em>. React.dev.</li>
+          <li>Vercel. (2023). <em>Next.js App Router Documentation</em>. Nextjs.org.</li>
+          <li>W3C. (2023). <em>Web Content Accessibility Guidelines (WCAG) 2.1</em>.</li>
+          <li>Tailwind Labs. (2023). <em>Tailwind CSS Documentation</em>. Tailwindcss.com.</li>
+          <li>Harrington, J., &amp; Cassidy, S. (1999). <em>Techniques in Speech Acoustics</em>. Kluwer Academic Publishers.</li>
+        </ul>
+      </div>
