@@ -7,16 +7,19 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Check for saved theme on initial load
+// Check for saved theme on initial load
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
-    if (savedTheme === 'dark') {
+    const darkMode = savedTheme === 'dark';
+    
+    if (darkMode) {
       document.documentElement.classList.add('dark');
-      setIsDark(true);
     } else {
       document.documentElement.classList.remove('dark');
-      setIsDark(false);
     }
+    
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsDark(darkMode);
   }, []);
 
   const toggleTheme = () => {
