@@ -17,27 +17,36 @@ export default function WordleBuilder() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phoneme Wordle: ${english}</title>
   <style>
-    body { font-family: sans-serif; text-align: center; background: #121213; color: white; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+    body { font-family: sans-serif; text-align: center; background: #121213; color: white; padding: 20px; margin: 0; min-height: 100vh; }
     h1 { color: white; margin-bottom: 20px; letter-spacing: 2px; }
-    .grid { display: grid; grid-template-columns: repeat(${selectedWord.phonemes.length}, 1fr); gap: 8px; max-width: 350px; margin: 20px auto; }
+    .game-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px; margin-top: 20px; }
+    .left-panel { display: flex; flex-direction: column; align-items: center; }
+    .right-panel { display: flex; flex-direction: column; align-items: center; }
+    .grid { display: grid; grid-template-columns: repeat(${selectedWord.phonemes.length}, 1fr); gap: 8px; max-width: 350px; }
     .cell { width: 62px; height: 62px; border: 2px solid #3a3a3c; display: flex; align-items: center; justify-content: center; font-size: 28px; background: transparent; color: white; font-weight: bold; transition: transform 0.2s;}
     .cell.correct { background: #6aaa64; border-color: #6aaa64; transform: rotateX(360deg); }
     .cell.present { background: #c9b458; border-color: #c9b458; transform: rotateX(360deg); }
     .cell.absent { background: #3a3a3c; border-color: #3a3a3c; transform: rotateX(360deg); }
-    .keyboard { max-width: 500px; margin: 30px auto; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+    .keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 400px; }
     .keyboard button { padding: 15px; font-size: 18px; cursor: pointer; border-radius: 6px; border: none; background: #818384; color: white; font-weight: bold; min-width: 40px; transition: background 0.2s; }
     .keyboard button:hover { background: #565758; }
-    .keyboard button.enter-btn { background: #6aaa64; flex-grow: 1; }
+    .keyboard button.enter-btn { background: #6aaa64; flex-grow: 1; width: 100%; margin-top: 10px; }
     #feedback { margin-top: 20px; font-size: 24px; font-weight: bold; height: 30px; }
     .hint-text { color: #818384; margin-top: 15px; font-size: 14px; }
   </style>
 </head>
 <body>
   <h1>PHONEME'LE</h1>
-  <div id="grid" class="grid"></div>
-  <div id="feedback"></div>
-  <div id="keyboard" class="keyboard"></div>
-  <p class="hint-text">Hover over phonemes to see English hints</p>
+  <div class="game-container">
+    <div class="left-panel">
+      <div id="grid" class="grid"></div>
+      <div id="feedback"></div>
+    </div>
+    <div class="right-panel">
+      <div id="keyboard" class="keyboard"></div>
+      <p class="hint-text">Hover over phonemes to see English hints</p>
+    </div>
+  </div>
 
   <script>
     const target = "${phonemes}".split('');
@@ -132,7 +141,6 @@ export default function WordleBuilder() {
       <h2 className="text-3xl font-bold mb-6 text-center">Wordle Builder</h2>
       
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Left Column: Configuration */}
         <div className="space-y-6">
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
             <h3 className="font-bold mb-3 text-lg">1. Select Target Word</h3>
@@ -170,7 +178,6 @@ export default function WordleBuilder() {
           </button>
         </div>
 
-        {/* Right Column: Visual Grid Preview */}
         <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow flex flex-col items-center justify-start">
           <h3 className="font-bold mb-4 text-lg">Activity Preview</h3>
           <div 
