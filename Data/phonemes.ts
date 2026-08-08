@@ -15,7 +15,7 @@ export const phonemeKeyboard = [
   ['æɔ', 'ɪə', 'ə']
 ];
 
-export const phonemeToEnglish = {
+export const phonemeToEnglish: Record<string, string> = {
   'θ': 'TH (as in thin)',
   'ð': 'TH (as in then)',
   'ʃ': 'SH (as in ship)',
