@@ -4,10 +4,14 @@ import { phonemeKeyboard, phonemeToEnglish, sampleWordList } from '@/data/phonem
 
 export default function WordleBuilder() {
   const [selectedWord, setSelectedWord] = useState(sampleWordList[0]);
+  const [difficulty, setDifficulty] = useState('medium'); // New difficulty state
 
   const generateHTML = () => {
     const phonemes = selectedWord.phonemes.join('');
     const english = selectedWord.english;
+    
+    // Set max guesses based on difficulty
+    const maxGuesses = difficulty === 'easy' ? 6 : difficulty === 'medium' ? 4 : 3;
     
     const htmlContent = `
 <!DOCTYPE html>
@@ -18,7 +22,8 @@ export default function WordleBuilder() {
   <title>Phoneme Wordle: ${english}</title>
   <style>
     body { font-family: sans-serif; text-align: center; background: #121213; color: white; padding: 20px; margin: 0; min-height: 100vh; }
-    h1 { color: white; margin-bottom: 20px; letter-spacing: 2px; }
+    h1 { color: white; margin-bottom: 10px; letter-spacing: 2px; }
+    .info { color: #818384; margin-bottom: 20px; }
     .game-container { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 50px; margin-top: 20px; }
     .left-panel { display: flex; flex-direction: column; align-items: center; }
     .right-panel { display: flex; flex-direction: column; align-items: center; }
@@ -37,6 +42,7 @@ export default function WordleBuilder() {
 </head>
 <body>
   <h1>PHONEME'LE</h1>
+  <div class="info">Difficulty: ${difficulty.toUpperCase()} | Max Guesses: ${maxGuesses}</div>
   <div class="game-container">
     <div class="left-panel">
       <div id="grid" class="grid"></div>
@@ -51,6 +57,8 @@ export default function WordleBuilder() {
   <script>
     const target = "${phonemes}".split('');
     const englishWord = "${english}";
+    const maxGuesses = ${maxGuesses};
+    let guessesUsed = 0;
     let currentGuess = [];
     
     const keys = ${JSON.stringify(phonemeKeyboard.flat())};
@@ -94,6 +102,8 @@ export default function WordleBuilder() {
         document.getElementById('feedback').innerHTML = '<span style="color: red;">Not enough phonemes!</span>';
         return;
       }
+      
+      guessesUsed++;
       const grid = document.getElementById('grid');
       let cells = grid.children;
       let allCorrect = true;
@@ -112,8 +122,10 @@ export default function WordleBuilder() {
 
       if(allCorrect) {
         document.getElementById('feedback').innerHTML = '<span style="color: #6aaa64;">Correct! English: ' + englishWord + '</span>';
+      } else if (guessesUsed >= maxGuesses) {
+        document.getElementById('feedback').innerHTML = '<span style="color: red;">Game Over! Word was: ' + englishWord + '</span>';
       } else {
-        document.getElementById('feedback').innerHTML = '<span style="color: #c9b458;">Try again!</span>';
+        document.getElementById('feedback').innerHTML = '<span style="color: #c9b458;">Try again! (' + (maxGuesses - guessesUsed) + ' guesses left)</span>';
         setTimeout(() => {
           currentGuess = [];
           renderGrid();
@@ -146,16 +158,26 @@ export default function WordleBuilder() {
             <h3 className="font-bold mb-3 text-lg">1. Select Target Word</h3>
             <select 
               onChange={(e) => setSelectedWord(sampleWordList[parseInt(e.target.value)])}
-              className="p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white w-full"
+              className="p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white w-full mb-4"
             >
               {sampleWordList.map((word, idx) => (
                 <option key={idx} value={idx}>{word.english} ({word.phonemes.join(' ')}) - {word.phonemes.length} phonemes</option>
               ))}
             </select>
+            
+            <h3 className="font-bold mb-3 text-lg">2. Select Difficulty</h3>
+            <select 
+              onChange={(e) => setDifficulty(e.target.value)}
+              className="p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white w-full"
+            >
+              <option value="easy">Easy (6 guesses)</option>
+              <option value="medium">Medium (4 guesses)</option>
+              <option value="hard">Hard (3 guesses)</option>
+            </select>
           </div>
 
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
-            <h3 className="font-bold mb-3 text-lg">2. Preview Keyboard & Hints</h3>
+            <h3 className="font-bold mb-3 text-lg">3. Preview Keyboard & Hints</h3>
             <div className="flex flex-wrap gap-2">
               {phonemeKeyboard.flat().map((p, idx) => (
                 <button 
@@ -174,7 +196,7 @@ export default function WordleBuilder() {
             onClick={generateHTML}
             className="w-full px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-lg font-bold shadow-lg"
           >
-            3. Generate Playable HTML
+            4. Generate Playable HTML
           </button>
         </div>
 
