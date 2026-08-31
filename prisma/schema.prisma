@@ -1,0 +1,30 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Stores the phoneme words
+model Word {
+  id           Int      @id @default(autoincrement())
+  englishWord  String
+  phonemes     String   // Stored as a comma-separated string, e.g. "θ,ɪ,n"
+  length       Int      // Number of phonemes (3, 4, or 5) for difficulty
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// Stores the teacher's saved activity settings
+model ActivitySetting {
+  id           Int      @id @default(autoincrement())
+  gameType     String   // "Wordle" or "WordSearch"
+  difficulty   String   // "Easy", "Medium", "Hard"
+  maxGuesses   Int      // Number of guesses allowed
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
