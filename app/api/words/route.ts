@@ -67,7 +67,7 @@ export async function PATCH(request: NextRequest) {
     const { englishWord, phonemes } = body;
 
     // Build the data object dynamically
-    const data: any = {};
+    const data: { englishWord?: string; phonemes?: string; length?: number } = {};
     if (englishWord) data.englishWord = englishWord;
     if (phonemes) {
       data.phonemes = phonemes;
