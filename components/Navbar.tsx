@@ -91,3 +91,4 @@ export default function Navbar() {
     </nav>
   );
 }
+<Link href="/admin" className="text-gray-300 hover:text-white transition-colors">Admin</Link>
