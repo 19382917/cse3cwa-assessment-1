@@ -1,16 +1,43 @@
 'use client';
-import { useState } from 'react';
-import { phonemeKeyboard, phonemeToEnglish, sampleWordList } from '@/data/phonemes';
+import { useState, useEffect } from 'react';
+import { phonemeKeyboard, phonemeToEnglish } from '@/data/phonemes';
+
+// Define the Word type for TypeScript
+type Word = {
+  english: string;
+  phonemes: string[];
+};
 
 export default function WordleBuilder() {
-  const [selectedWord, setSelectedWord] = useState(sampleWordList[0]);
-  const [difficulty, setDifficulty] = useState('medium'); // New difficulty state
+  const [words, setWords] = useState<Word[]>([]);
+  const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [difficulty, setDifficulty] = useState('medium');
+
+  // Fetch words from the database when the page loads
+  useEffect(() => {
+    const loadData = async () => {
+      const res = await fetch('/api/words');
+      const data: { englishWord: string; phonemes: string }[] = await res.json();
+      
+      const mapped: Word[] = data.map((w) => ({
+        english: w.englishWord,
+        phonemes: w.phonemes.split(',')
+      }));
+      
+      setWords(mapped);
+      if (mapped.length > 0) {
+        setSelectedWord(mapped[0]);
+      }
+    };
+    
+    loadData();
+  }, []);
 
   const generateHTML = () => {
+    if (!selectedWord) return alert('No words in the database! Add some in the Admin tab first.');
+    
     const phonemes = selectedWord.phonemes.join('');
     const english = selectedWord.english;
-    
-    // Set max guesses based on difficulty
     const maxGuesses = difficulty === 'easy' ? 6 : difficulty === 'medium' ? 4 : 3;
     
     const htmlContent = `
@@ -148,6 +175,16 @@ export default function WordleBuilder() {
     document.body.removeChild(a);
   };
 
+  // If no words are in the database yet
+  if (!selectedWord) {
+    return (
+      <div className="container mx-auto p-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">Wordle Builder</h2>
+        <p className="text-gray-500 dark:text-gray-400">No words found in the database. Please add words in the <a href="/admin" className="text-blue-500 underline">Admin Dashboard</a>.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h2 className="text-3xl font-bold mb-6 text-center">Wordle Builder</h2>
@@ -157,10 +194,10 @@ export default function WordleBuilder() {
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
             <h3 className="font-bold mb-3 text-lg">1. Select Target Word</h3>
             <select 
-              onChange={(e) => setSelectedWord(sampleWordList[parseInt(e.target.value)])}
+              onChange={(e) => setSelectedWord(words[parseInt(e.target.value)])}
               className="p-2 border rounded bg-white dark:bg-gray-700 text-black dark:text-white w-full mb-4"
             >
-              {sampleWordList.map((word, idx) => (
+              {words.map((word, idx) => (
                 <option key={idx} value={idx}>{word.english} ({word.phonemes.join(' ')}) - {word.phonemes.length} phonemes</option>
               ))}
             </select>
