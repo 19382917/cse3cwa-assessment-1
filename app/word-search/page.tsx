@@ -1,9 +1,36 @@
 'use client';
-import { sampleWordList, phonemeKeyboard } from '@/data/phonemes';
+import { useState, useEffect } from 'react';
+import { phonemeKeyboard } from '@/data/phonemes';
+
+type Word = {
+  english: string;
+  phonemes: string[];
+};
 
 export default function WordSearchBuilder() {
+  const [words, setWords] = useState<Word[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const res = await fetch('/api/words');
+      const data: { englishWord: string; phonemes: string }[] = await res.json();
+      const mapped: Word[] = data.map((w) => ({
+        english: w.englishWord,
+        phonemes: w.phonemes.split(',')
+      }));
+      setWords(mapped);
+    };
+    loadData();
+  }, []);
+
   const generateHTML = () => {
-    const words = sampleWordList.slice(0, 5); 
+    if (words.length === 0) return alert('No words in the database! Add some in the Admin tab first.');
+    
+    // Take up to 5 words from the database for the word search
+    const selectedWords = words.slice(0, 5);
+    const phonemeStrings = selectedWords.map(w => w.phonemes);
+    const englishStrings = selectedWords.map(w => w.english);
+    
     const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
@@ -31,10 +58,9 @@ export default function WordSearchBuilder() {
   
   <script>
     const grid = document.getElementById('grid');
-    const words = ${JSON.stringify(words.map(w => w.phonemes))};
-    const englishWords = ${JSON.stringify(words.map(w => w.english))};
+    const words = ${JSON.stringify(phonemeStrings)};
+    const englishWords = ${JSON.stringify(englishStrings)};
     
-    // Display words to find
     const wordsContainer = document.getElementById('words');
     words.forEach((w, i) => {
       let span = document.createElement('span');
@@ -45,9 +71,8 @@ export default function WordSearchBuilder() {
     });
 
     const allPhonemes = ${JSON.stringify(phonemeKeyboard.flat())};
-    let wordLocations = []; // Store [row, col] arrays for each word
+    let wordLocations = []; 
 
-    // Initialize 10x10 grid with random phonemes
     let matrix = [];
     for(let r=0; r<10; r++) {
       matrix[r] = [];
@@ -56,9 +81,8 @@ export default function WordSearchBuilder() {
       }
     }
 
-    // Place words horizontally
     words.forEach((w, i) => {
-      let r = i; // place word i on row i
+      let r = i; 
       let c = 0;
       let loc = [];
       w.forEach(ph => {
@@ -69,7 +93,6 @@ export default function WordSearchBuilder() {
       wordLocations.push(loc);
     });
 
-    // Render grid
     let selectedCells = [];
     for(let r=0; r<10; r++) {
       for(let c=0; c<10; c++) {
@@ -80,7 +103,7 @@ export default function WordSearchBuilder() {
         cell.dataset.col = c;
         
         cell.onclick = function() {
-          if(this.classList.contains('found')) return; // Ignore found cells
+          if(this.classList.contains('found')) return; 
           
           if(this.classList.contains('highlight')) {
             this.classList.remove('highlight');
@@ -100,7 +123,6 @@ export default function WordSearchBuilder() {
     function checkSelection() {
       if(selectedCells.length === 0) return;
       
-      // Check if current selection matches any word location exactly
       wordLocations.forEach((loc, index) => {
         if(loc.length !== selectedCells.length) return;
         
@@ -116,7 +138,6 @@ export default function WordSearchBuilder() {
         }
         
         if(match) {
-          // Word found!
           selectedCells.forEach(cell => {
             cell.classList.remove('highlight');
             cell.classList.add('found');
@@ -147,12 +168,16 @@ export default function WordSearchBuilder() {
       <h2 className="text-2xl font-bold mb-4">Word Search Builder</h2>
       
       <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
-        <h3 className="font-bold mb-2">1. Word List Preview:</h3>
-        <ul className="list-disc pl-5">
-          {sampleWordList.slice(0, 5).map((word, idx) => (
-            <li key={idx}>{word.english} ({word.phonemes.join(' ')})</li>
-          ))}
-        </ul>
+        <h3 className="font-bold mb-2">1. Word List Preview (From Database):</h3>
+        {words.length === 0 ? (
+          <p className="text-gray-500">No words found. Add some in the <a href="/admin" className="text-blue-500 underline">Admin Dashboard</a>.</p>
+        ) : (
+          <ul className="list-disc pl-5">
+            {words.slice(0, 5).map((word, idx) => (
+              <li key={idx}>{word.english} ({word.phonemes.join(' ')})</li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <button 
