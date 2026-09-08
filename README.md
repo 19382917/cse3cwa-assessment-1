@@ -1,4 +1,4 @@
-CSE3CWA Assessment 1: Phoneme Game Builder
+CSE3CWA Assessment 2: Phoneme Game Builder (Backend & Docker)
 
 This project is a frontend builder interface designed for Speech Pathology teachers to create phoneme-based classroom activities. It allows teachers to configure a Wordle or Word Search game using HCE phoneme symbols and generate a standalone, playable HTML file.
 Purpose

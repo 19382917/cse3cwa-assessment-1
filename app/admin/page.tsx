@@ -12,6 +12,7 @@ export default function AdminDashboard() {
   const [words, setWords] = useState<Word[]>([]);
   const [englishWord, setEnglishWord] = useState('');
   const [phonemes, setPhonemes] = useState('');
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const fetchWords = async () => {
     const res = await fetch('/api/words');
@@ -21,32 +22,57 @@ export default function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchWords();
+    useEffect(() => {
+    const initFetch = async () => {
+      const res = await fetch('/api/words');
+      if (res.ok) {
+        const data = await res.json();
+        setWords(data);
+      }
+    };
+    initFetch();
   }, []);
 
-  const addWord = async () => {
+  const handleSubmit = async () => {
     if (!englishWord || !phonemes) return alert('Please fill in all fields');
     
-    const res = await fetch('/api/words', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ englishWord, phonemes }),
-    });
-
-    if (res.ok) {
-      setEnglishWord('');
-      setPhonemes('');
-      fetchWords(); 
+    // If editingId is set, we UPDATE the word. Otherwise, we CREATE a new one.
+    if (editingId) {
+      const res = await fetch(`/api/words?id=${editingId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ englishWord, phonemes }),
+      });
+      if (res.ok) {
+        setEditingId(null);
+        setEnglishWord('');
+        setPhonemes('');
+        fetchWords(); 
+      }
+    } else {
+      const res = await fetch('/api/words', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ englishWord, phonemes }),
+      });
+      if (res.ok) {
+        setEnglishWord('');
+        setPhonemes('');
+        fetchWords(); 
+      }
     }
+  };
+
+  const editWord = (word: Word) => {
+    setEditingId(word.id);
+    setEnglishWord(word.englishWord);
+    setPhonemes(word.phonemes);
   };
 
   const deleteWord = async (id: number) => {
     const res = await fetch(`/api/words?id=${id}`, {
       method: 'DELETE',
     });
-
     if (res.ok) {
       fetchWords(); 
     }
@@ -58,7 +84,7 @@ export default function AdminDashboard() {
       
       <div className="grid md:grid-cols-2 gap-6">
         <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow">
-          <h3 className="font-bold text-xl mb-4">Add New Word</h3>
+          <h3 className="font-bold text-xl mb-4">{editingId ? 'Edit Word' : 'Add New Word'}</h3>
           <div className="space-y-4">
             <input
               type="text"
@@ -75,11 +101,19 @@ export default function AdminDashboard() {
               onChange={(e) => setPhonemes(e.target.value)}
             />
             <button
-              onClick={addWord}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold"
+              onClick={handleSubmit}
+              className={`w-full px-4 py-2 text-white rounded font-bold ${editingId ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-blue-600 hover:bg-blue-700'}`}
             >
-              Add to Database
+              {editingId ? 'Update Word' : 'Add to Database'}
             </button>
+            {editingId && (
+              <button
+                onClick={() => { setEditingId(null); setEnglishWord(''); setPhonemes(''); }}
+                className="w-full px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 font-bold"
+              >
+                Cancel Edit
+              </button>
+            )}
           </div>
         </div>
 
@@ -95,12 +129,20 @@ export default function AdminDashboard() {
                     <span className="font-bold">{word.englishWord}</span>
                     <span className="ml-2 text-gray-500 dark:text-gray-400">({word.phonemes})</span>
                   </div>
-                  <button
-                    onClick={() => deleteWord(word.id)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                  >
-                    Delete
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => editWord(word)}
+                      className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteWord(word.id)}
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
             )}
