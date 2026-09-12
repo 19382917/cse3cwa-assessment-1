@@ -3,8 +3,8 @@ export default function About() {
     <div className="max-w-2xl mx-auto py-10">
       <h1 className="text-3xl font-bold mb-4">About This Project</h1>
       <p className="mb-4 text-gray-700 dark:text-gray-300">
-        This project is a frontend builder for Speech Pathology teachers to create phoneme-based classroom activities.
-        Assessment 1 focuses entirely on frontend design, usability, and React implementation. Later assessments will introduce a database and dynamic word-list management.
+        This project is a full-stack web application builder designed for Speech Pathology teachers to create phoneme-based classroom activities. 
+        While Assessment 1 established the frontend interface, Assessment 2 introduces a backend layer, utilizing Prisma ORM for database management and Docker for containerized deployment. Teachers can now permanently store, manage, and retrieve phoneme word lists and activity settings.
       </p>
       
       <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
@@ -23,7 +23,7 @@ export default function About() {
             allowFullScreen>
           </iframe>
         </div>
-        {/* New Video Description */}
+        {/* Video Description */}
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
           <strong>Video Walkthrough:</strong> This short video demonstrates how to use the Phoneme Builder application. It covers navigating the interface, previewing the phoneme keyboard and hints, adjusting the difficulty settings, and generating the standalone, playable HTML files for both the Wordle and Word Search classroom activities.
         </p>
@@ -34,6 +34,8 @@ export default function About() {
         <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300">
           <li>Meta Platforms. (2023). <em>React Documentation</em>. React.dev.</li>
           <li>Vercel. (2023). <em>Next.js App Router Documentation</em>. Nextjs.org.</li>
+          <li>Prisma. (2023). <em>Prisma ORM Documentation</em>. Prisma.io.</li>
+          <li>Docker Inc. (2023). <em>Docker Documentation</em>. Docs.docker.com.</li>
           <li>W3C. (2023). <em>Web Content Accessibility Guidelines (WCAG) 2.1</em>.</li>
           <li>Tailwind Labs. (2023). <em>Tailwind CSS Documentation</em>. Tailwindcss.com.</li>
           <li>Harrington, J., &amp; Cassidy, S. (1999). <em>Techniques in Speech Acoustics</em>. Kluwer Academic Publishers.</li>
