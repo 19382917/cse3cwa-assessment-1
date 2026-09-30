@@ -1,30 +1,49 @@
-CSE3CWA Assessment 2: Phoneme Game Builder (Backend & Docker)
+CSE3CWA Assessment 3: Phoneme Game Builder (Data-Driven & Testing)
 
-This project is a frontend builder interface designed for Speech Pathology teachers to create phoneme-based classroom activities. It allows teachers to configure a Wordle or Word Search game using HCE phoneme symbols and generate a standalone, playable HTML file.
+This project is a full-stack web application builder designed for Speech Pathology teachers to create phoneme-based classroom activities. It extends the frontend (Assessment 1) and backend/Docker (Assessment 2) by introducing a data-driven dashboard, observability metrics, database tracking, and comprehensive testing (Playwright, JMeter, Lighthouse).
 Purpose
 
-The builder focuses on frontend design, usability, and accessibility. Teachers can select target phonemes, preview the activity, and download a single HTML file that runs in any normal web browser without requiring a server or database.
+The builder allows teachers to configure Wordle and Word Search games using HCE phoneme symbols, save their word lists to a database, and generate standalone, playable HTML files. Assessment 3 adds an operational dashboard to monitor system health, track successful/failed generations, and ensure the system is reliable and accessible.
 Features
 
-    Wordle Builder: Select from a 90-word HCE phoneme corpus. Adjust difficulty based on word length and max guesses.
-    Word Search Builder: Automatically generates a 10x10 interactive grid from a fixed 5-word phoneme list.
-    Phoneme Hints: Hover over any phoneme symbol (e.g., /θ/) to see the English equivalent (e.g., "TH (as in thin)").
-    Responsive Design: Mobile-friendly layout with a hamburger menu for compact navigation.
+    Operational Dashboard: Live data-driven view showing system health (200 OK), total activities generated, success/fail rates, and most-used activity types.
+    Admin Dashboard: Full CRUD functionality for managing phoneme word lists and activity settings, saved permanently via Prisma ORM.
+    Game Builders: Wordle and Word Search builders pull dynamically from the database to generate standalone HTML files.
+    Observability & Instrumentation: Every game generation is logged to the database as a "Success" or "Failed" metric.
     Dark/Light Mode: Theme preference saved in local storage and cookies.
-    Standalone HTML Generation: Uses JavaScript Blob URLs to download lightweight, playable game files.
+    Responsive Design: Mobile-friendly layout with a hamburger menu and semantic HTML.
 
 Tech Stack
 
     Framework: Next.js (App Router)
     Language: TypeScript
     Styling: Tailwind CSS
-    AI Assistance: Used for code generation and debugging (AI Acknowledgement submitted via LMS).
+    Database: Prisma ORM (SQLite)
+    Testing: Playwright (E2E), JMeter (Load), Lighthouse (Accessibility)
+    Containerization: Docker & Docker Compose
+
+Testing & Accessibility
+
+    Playwright: End-to-end tests included in the /tests folder. Run using npx playwright test. Covers Admin CRUD and Wordle generation workflows.
+    JMeter: Load testing performed against /api/words simulating up to 1000 concurrent users.
+    Lighthouse: Evaluated for accessibility, achieving a 100/100 score. High-contrast themes and ARIA labels were used to ensure usability for all teachers.
 
 Getting Started
 
 First, install the dependencies:
 
 npm install
+
+Set up the database:
+bash
+ 
+  
+ 
+ 
+npx prisma db push
+npx prisma generate
+ 
+ 
 
 Run the development server:
 bash
