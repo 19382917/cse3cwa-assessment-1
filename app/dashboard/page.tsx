@@ -53,6 +53,22 @@ export default function Dashboard() {
         </button>
       </div>
 
+      {/* Warning Indicators / Alerts */}
+      <div className="mb-6 space-y-4">
+        {metrics && metrics.totalWords === 0 && (
+          <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded shadow-sm">
+            <strong className="font-bold">Warning:</strong>
+            <p className="text-sm">Empty word list detected. Teachers cannot generate activities. Please add words in the Admin Dashboard.</p>
+          </div>
+        )}
+        {metrics && metrics.failedGenerations > 0 && (
+          <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-800 rounded shadow-sm">
+            <strong className="font-bold">Alert:</strong>
+            <p className="text-sm">{metrics.failedGenerations} failed generation(s) detected. Check for invalid data or missing word selections.</p>
+          </div>
+        )}
+      </div>
+
       {/* Health Status Card */}
       <div className="mb-6 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow flex items-center gap-4">
         <div className={`w-4 h-4 rounded-full ${healthStatus.includes('Healthy') ? 'bg-green-500' : 'bg-red-500'}`}></div>
