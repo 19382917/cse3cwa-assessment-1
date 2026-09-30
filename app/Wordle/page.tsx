@@ -34,7 +34,15 @@ export default function WordleBuilder() {
   }, []);
 
   const generateHTML = () => {
-    if (!selectedWord) return alert('No words in the database! Add some in the Admin tab first.');
+    if (!selectedWord) {
+      // Log a Failed metric if no word is selected/database is empty
+      fetch('/api/metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameType: 'Wordle', status: 'Failed' }),
+      });
+      return alert('No words in the database! Add some in the Admin tab first.');
+    }
     
     const phonemes = selectedWord.phonemes.join('');
     const english = selectedWord.english;
@@ -173,6 +181,13 @@ export default function WordleBuilder() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
+    // Log a Success metric after the file generates
+    fetch('/api/metrics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gameType: 'Wordle', status: 'Success' }),
+    });
   };
 
   // If no words are in the database yet

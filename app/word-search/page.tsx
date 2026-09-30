@@ -24,7 +24,15 @@ export default function WordSearchBuilder() {
   }, []);
 
   const generateHTML = () => {
-    if (words.length === 0) return alert('No words in the database! Add some in the Admin tab first.');
+    if (words.length === 0) {
+      // Log a Failed metric
+      fetch('/api/metrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameType: 'WordSearch', status: 'Failed' }),
+      });
+      return alert('No words in the database! Add some in the Admin tab first.');
+    }
     
     // Take up to 5 words from the database for the word search
     const selectedWords = words.slice(0, 5);
@@ -161,6 +169,13 @@ export default function WordSearchBuilder() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
+    // Log a Success metric
+    fetch('/api/metrics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gameType: 'WordSearch', status: 'Success' }),
+    });
   };
 
   return (
