@@ -7,7 +7,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-// Check for saved theme on initial load
+  // Check for saved theme on initial load
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     const darkMode = savedTheme === 'dark';
@@ -47,6 +47,8 @@ export default function Navbar() {
           <Link href="/wordle" className="text-gray-300 hover:text-white transition-colors">Wordle</Link>
           <Link href="/word-search" className="text-gray-300 hover:text-white transition-colors">Word Search</Link>
           <Link href="/settings" className="text-gray-300 hover:text-white transition-colors">Settings</Link>
+          <Link href="/admin" className="text-gray-300 hover:text-white transition-colors">Admin</Link>
+          <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors">Dashboard</Link>
           
           {/* Dark Mode Toggle Button */}
           <button 
@@ -86,9 +88,10 @@ export default function Navbar() {
           <Link href="/wordle" className="text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>Wordle</Link>
           <Link href="/word-search" className="text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>Word Search</Link>
           <Link href="/settings" className="text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>Settings</Link>
+          <Link href="/admin" className="text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>Admin</Link>
+          <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>Dashboard</Link>
         </div>
       )}
     </nav>
   );
 }
-<Link href="/admin" className="text-gray-300 hover:text-white transition-colors">Admin</Link>
